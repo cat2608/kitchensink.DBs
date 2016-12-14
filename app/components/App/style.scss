@@ -1,0 +1,21 @@
+@import '~scss/core';
+
+.App {
+  padding: 2rem;
+
+  &:before {
+    content: '';
+    display: block;
+    width: 3rem;
+    height: 3rem;
+    margin-bottom: 1rem;
+    background: url('~assets/images/view-list.svg') 0 0 no-repeat;
+    background-size: contain;
+  }
+}
+
+.App .App {
+  &-btnAdd {
+    color: $color-primary;
+  }
+}

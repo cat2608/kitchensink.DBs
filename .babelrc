@@ -1,0 +1,21 @@
+{
+  "presets": [
+    "es2015-node4",
+    "react",
+    "stage-2"
+  ],
+  "plugins": [],
+  "retainLines": true,
+  "sourceMaps": "inline",
+  "env": {
+    "test": {
+      "plugins": ["istanbul"]
+    },
+    "production": {
+      "plugins": [
+        "transform-react-constant-elements",
+        "transform-react-inline-elements"
+      ]
+    }
+  }
+}

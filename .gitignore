@@ -1,0 +1,28 @@
+# ignore node modules folder
+node_modules
+
+# ignore bower folder
+bower_components
+
+# ignore code coverage
+coverage
+.nyc_output
+
+# ignore build app
+public/assets
+public/index.html
+
+# ignore environment vars
+.env
+
+# ignore node error log
+npm-debug.log
+
+# ignore marko compiled templates
+templates/**/*.marko.js
+
+# ignore happypack cache
+.happypack
+
+# other stuff to ignore
+.DS_Store
