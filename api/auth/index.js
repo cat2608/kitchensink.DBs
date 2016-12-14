@@ -1,4 +1,4 @@
-import User from '../../models/user';
+import User from '../../lib/models/user';
 
 function *signup () {
   let { username, password } = this.request.body;

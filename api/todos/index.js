@@ -1,7 +1,7 @@
 import promisify from 'es6-promisify';
 
-import User from '../../models/user';
-import Todo from '../../models/todo';
+import User from '../../lib/models/user';
+import Todo from '../../lib/models/todo';
 
 /**
  * This file illustrates how you may map
