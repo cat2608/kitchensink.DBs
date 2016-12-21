@@ -1,56 +1,64 @@
-import promisify from 'es6-promisify';
+import { Todo, User } from '../../lib/models';
 
-import User from '../../lib/models/user';
-import Todo from '../../lib/models/todo';
+// /**
+//  * This file illustrates how you may map
+//  * single routes using an exported object
+//  */
 
-/**
- * This file illustrates how you may map
- * single routes using an exported object
- */
+const validUUID = function (uuid) {
+  return uuid.match(/^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i);
+};
+
+function *findTodo () {
+  if (!validUUID(this.params.id)) {
+    throw new Error('Todo id not valid.');
+  }
+
+  const todo = yield Todo.findById(this.params.id, {
+    include: [{ model: User, attributes: [ 'id', 'username' ] }],
+  });
+
+  if (!todo) {
+    return this.body = {};
+  }
+
+  const { userId, ...todoParsed } = todo.get({ plain: true }); // eslint-disable-line no-unused-vars
+  this.body = todoParsed;
+}
 
 function *all () {
   const { user } = this.session;
+  const todos = yield Todo.findAll({
+    order: [['createdAt', 'DESC']],
+    where: { userId: user.id },
+    include: [User],
+  });
 
-  const getUserById = promisify(User.getById, User);
-  const sessionUser = yield getUserById(user.id);
-
-  const findAll = promisify(Todo.find, Todo);
-  const todos = yield findAll({ user: sessionUser }, { load: ['user'] });
-
-  let parsedTodos = todos.map(Todo.parse);
-  this.body = parsedTodos;
+  this.body = todos.map(todo => {
+    return {
+      ...JSON.parse(JSON.stringify(todo, ['id', 'text', 'completed', 'createdAt'])),
+      user: todo.user.parse(),
+    };
+  });
 }
 
 function *create () {
   const { user } = this.session;
   const { text } = this.request.body;
 
-  const getUserById = promisify(User.getById, User);
-  const sessionUser = yield getUserById(user.id);
-
-  let todoItem = new Todo({ text, user: sessionUser });
-  const save = promisify(todoItem.save, todoItem);
-  yield save();
-
-  this.body = Todo.parse(todoItem);
-}
-
-function *findTodo () {
-  const getById = promisify(Todo.getById, Todo);
-  let todo = yield getById(this.params.id, { load: ['user'] });
-
-  this.body = Todo.parse(todo);
+  const todoItem = yield Todo.create({ text, userId: user.id });
+  this.body = todoItem.get({ plain: true });
 }
 
 function *updateTodo () {
   const { user } = this.session;
-  let keys = ['text', 'completed'];
+  const keys = ['text', 'completed'];
 
-  const getUserById = promisify(User.getById, User);
-  const sessionUser = yield getUserById(user.id);
+  if (!validUUID(this.params.id)) {
+    throw new Error('Todo id not valid.');
+  }
 
-  const findAll = promisify(Todo.find, Todo);
-  const todo = (yield findAll({ _id: this.params.id, user: sessionUser }, { load: ['user'] }))[0];
+  let todo = yield Todo.findOne({ where: { id: this.params.id, userId: user.id } });
 
   if (!todo) {
     throw new Error('Todo not found');
@@ -62,26 +70,31 @@ function *updateTodo () {
     }
   }
 
-  const save = promisify(todo.save, todo);
-  yield save();
-
-  this.body = Todo.parse(todo);
+  yield todo.save();
+  this.body = { msg: 'ok' };
 }
 
 function *deleteTodo () {
-  const getById = promisify(Todo.getById, Todo);
-  let todo = yield getById(this.params.id);
+  const { user } = this.session;
 
-  const remove = promisify(todo.remove, todo);
-  yield remove();
+  if (!validUUID(this.params.id)) {
+    throw new Error('Todo id not valid.');
+  }
 
+  const todo = yield Todo.findOne({ where: { id: this.params.id, userId: user.id } });
+
+  if (!todo) {
+    throw new Error('Todo not found.');
+  }
+
+  yield todo.destroy();
   this.body = { msg: 'ok' };
 }
 
 const API = {
+  'GET /todos/:id': findTodo,
   'GET /todos': all,
   'POST /todos': create,
-  'GET /todos/:id': findTodo,
   'PUT /todos/:id': updateTodo,
   'POST /todos/:id': deleteTodo,
 };

@@ -1,13 +1,13 @@
-# kitchensink.couchbase
+# kitchensink.posgres
 
 Fork https://github.com/albertogasparin/react-starterkit
 
-Testing Couchbase Integration
+Testing Posgres Integration
 
 ### ENV variables
 
 **DB_URL** `string`    
-Couchbase server/database url (default: `couchbase://127.0.0.1`)
+Posgres server/database url (default: `postgres://127.0.0.1:5432`)
 
-**DB_BUCKET** `string`   
-Couchbase server/database bucket name (default: `react_starterkit`)
+**DB_NAME** `string`   
+Posgres server/database bucket name (default: `react_starterkit`)
