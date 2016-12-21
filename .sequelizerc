@@ -1,0 +1,14 @@
+var path = require('path');
+var config = require('./lib/config');
+
+
+module.exports = {
+  'config': __filename,
+  [config.env]: {
+    database: config.server.db.name,
+    dialect: 'postgres',
+    url: config.server.db.url,
+  },
+  'migrations-path': path.resolve(__dirname, 'lib/migrations'),
+  'models-path': path.resolve(__dirname, 'lib/models')
+}
