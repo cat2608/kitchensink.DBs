@@ -1,8 +1,8 @@
-# kitchensink.posgres
+# kitchensink.postgreSQL
 
 Fork https://github.com/albertogasparin/react-starterkit
 
-Testing Posgres Integration
+Testing PostgreSQL Integration
 
 ### ENV variables
 
