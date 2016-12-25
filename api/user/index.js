@@ -1,18 +1,22 @@
 import { User } from '../../lib/models';
 
-function *getDetails () {
-  const { user } = this.session;
-  let userDetails = yield User.findById(user.id);
+function *getUserDetails () {
+  const { id } = this.params;
+  const userSession = yield User.findById(id);
+  this.body = userSession.parse();
+}
 
-  this.body = userDetails.parse();
+function *all () {
+  const users = yield User.findAll({});
+  this.body = JSON.parse(JSON.stringify(users));
 }
 
 function *updateUser () {
   const { user } = this.session;
   const keys = ['twitter', 'github'];
 
-  let userDetails = yield User.findById(user.id);
-  userDetails.mail = this.request.body.mail;
+  let userSession = yield User.findById(user.id);
+  userSession.mail = this.request.body.mail;
 
   const accounts = keys.reduce((userAccounts, key) => {
     if (this.request.body[key]) {
@@ -26,18 +30,18 @@ function *updateUser () {
       userAccounts.push({ [key]: this.request.body[key] });
     }
     return userAccounts;
-  }, userDetails.accounts);
+  }, userSession.accounts);
 
-  userDetails.accounts = accounts;
-  yield userDetails.save();
-  this.body = userDetails.parse();
+  userSession.accounts = accounts;
+  yield userSession.save();
+  this.body = userSession.parse();
 }
 
 
 const API = {
-  'GET /user': getDetails,
-  'POST /user': updateUser,
+  'GET /users/:id': getUserDetails,
+  'GET /users': all,
+  'POST /users': updateUser,
 };
 
 export default API;
-
