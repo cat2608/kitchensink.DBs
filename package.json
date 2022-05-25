@@ -65,7 +65,7 @@
     "co": "^4.4.0",
     "couchbase": "^2.2.4",
     "credential": "^1.0.0",
-    "css-loader": "2.0.0",
+    "css-loader": "2.1.1",
     "dotenv": "~2.0.0",
     "es6-promise": "^3.0.0",
     "es6-promisify": "^5.0.0",
