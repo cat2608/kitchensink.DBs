@@ -89,7 +89,7 @@
     "marko": "^3.10.1",
     "node-sass": "^7.0.1",
     "optimize-css-assets-webpack-plugin": "^2.0.0",
-    "ottoman": "^1.0.4",
+    "ottoman": "^2.2.2",
     "postcss-loader": "^3.0.0",
     "react": "^16.5.0",
     "react-dom": "^16.5.0",
